@@ -50,7 +50,7 @@ module.exports = function(deployer) {
 };
 ```
 
-ทำการคอมไพล์และย้าย TutorialToken ไปยัง Ganache (Private Blockchain)
+ทำการคอมไพล์และย้าย TutorialToken ไปยัง Ganache (Private Blockchain)  
 ```
 truffle compile
 truffle migrate
