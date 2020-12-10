@@ -1,0 +1,31 @@
+{
+  "name": "token-wallet",
+  "version": "1.0.0",
+  "private": false,
+  "dependencies": {
+    "bulma-start": "0.0.2",
+    "openzeppelin-solidity": "^2.2.0",
+    "react": "^17.0.1",
+    "react-dom": "^16.14.0",
+    "react-scripts": "^4.0.1",
+    "web3": "^1.0.0-beta.52"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
