@@ -85,3 +85,92 @@ contract Cheque {
     }
 }
 ```
+
+## Step 3: Smart Contract Migration
+ใช้ Visual Studio Code สร้างไฟล์ 2_deploy_contracts.js ในไดเร็กทอรี migrations ดังนี้
+
+```
+var Cheque = artifacts.require("Cheque");
+
+module.exports = function (deployer) {
+    deployer.deploy(Cheque, { value: 1e18 });
+};
+```
+
+เปิดโปรแกรม Ganache เพื่อใช้จำลอง Ethereum Blockchain จากนั้นทำการคอมไพล์และติดตั้ง Smart Contract ลงใน Ganache ด้วยคำสั่ง
+```
+truffle compile
+truffle migrate
+```
+โปรดสังเกตค่า Ether ที่จ่ายออกไปจาก account แรก
+
+## Step 4: ทำการ Cheque Siging
+ปรับเปลี่ยนโค้ดต่อไปนี้ ในส่วน private key ของ accounts[0] ให้เป็นค่า private key ที่ได้จาก account แรกใน Ganache และให้ก็อปปี้ address ของ account ที่สองใน Ganache มาแทนข้อความ address ของ accounts[1]
+```
+const Web3 = require('web3')
+const web3 = new Web3('http://localhost:7545')
+const fs = require('fs');
+
+const rawCheque = fs.readFileSync('./build/contracts/Cheque.json')
+const parsedCheque = JSON.parse(rawCheque)
+const contractAddress = parsedCheque.networks['5777'].address
+
+let signPayment = async (recipient, amount) => {
+    const accounts = await web3.eth.getAccounts()
+    const payer = accounts[0]
+    const txCount = await web3.eth.getTransactionCount(payer)
+    const hash = web3.utils.soliditySha3(recipient, amount, txCount, contractAddress)
+
+    try {
+        const sigObject = await web3.eth.accounts.sign(hash, 'private key ของ accounts[0]')
+        console.log(amount, txCount, sigObject)
+    } catch (error) {
+        console.log(error)
+    }
+} 
+
+signPayment('address ของ accounts[1]', 1e18)
+```
+
+
+รันโค้ดต่อไปนี้ เพื่อลงลายมือชื่อลงใน Cheque Smart Contract
+```
+node index.js
+```
+
+โปรดสังเกตผลลัพธ์ที่ได้ เช่น ค่า value, txCount, message, messageHash และก็อปปี้ signature เอาไว้ใช้ในขั้นตอนต่อไป
+
+## Step 5: การรันเช็ค
+ที่ไดเร็กทอรีหลักของโปรเจ็คนี้ (เช่น 06_Crypto-Cheque) เปิดใช้งาน console ของ truffle เพื่อโต้ตอบกับ Smart Contract โดยใช้คำสั่งต่อไปนี้
+```
+truffle console
+```
+
+เมื่อเปิด console แล้ว สามารถใช้คำสั่งของ Javascript ดังนี้
+```
+let app
+Cheque.deployed().then((instance) => {app = instance})
+let accounts
+web3.eth.getAccounts().then((result) => {accounts = result})
+```
+ลองตรวจสอบดูว่าสามารถอ่านค่า Address ของบัญชีต่าง ๆ ใน Ganache ได้โดยใช้คำสั่ง
+
+```
+accounts
+```
+
+กำหนดค่า txCount และ sig ตามที่ได้จากขั้นตอนที่ 4
+
+```
+let txCount = ...
+let sig = '...'
+```
+
+ทำการรับเช็คให้กับ accounts[1] ได้โดยใช้คำสั่งดังนี้
+
+```
+app.claimPayment(1, txCount, sig, {from: accounts[1]})
+```
+
+สังเกตผลลัพธ์ที่ได้ โดยเฉพาะค่า Eth ใน accounts[1] ของ Ganache
+
