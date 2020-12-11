@@ -37,14 +37,25 @@ node QRcode.js
 ```
 QR code will be saved in  `qr.html` file.Open this file from a web brower to see the QR code.
 
-## Todos
- - Write MORE Tests
- - ES6
+## Special Notes for Ubuntu
+### 1. Create private/public key pair
+```
+openssl genrsa -out private.pem 4096
+```
 
-License
-----
+### 2. Extrac public key
+```
+openssl rsa -in private.pem -out public.pem -outform PEM -pubout
+```
 
-MIT
+### 3. Sign
+```
+openssl dgst -sha256 -sign private.pem -out SLA.txt.sha256 SLA.txt
+```
+
+### 4. Verify
+```
+openssl dgst -sha256 -verify public.pem -signature SLA.txt.sha256 SLA.txt
+```
 
 
-**Free Software, Hell Yeah!**
