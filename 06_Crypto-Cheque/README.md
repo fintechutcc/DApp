@@ -140,7 +140,7 @@ node index.js
 
 โปรดสังเกตผลลัพธ์ที่ได้ เช่น ค่า value, txCount, message, messageHash และก็อปปี้ signature เอาไว้ใช้ในขั้นตอนต่อไป
 
-## Step 5: การรันเช็ค
+## Step 5: การรับเช็คโดย accounts[1]
 ที่ไดเร็กทอรีหลักของโปรเจ็คนี้ (เช่น 06_Crypto-Cheque) เปิดใช้งาน console ของ truffle เพื่อโต้ตอบกับ Smart Contract โดยใช้คำสั่งต่อไปนี้
 ```
 truffle console
